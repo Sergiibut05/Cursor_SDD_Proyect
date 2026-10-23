@@ -1,0 +1,14 @@
+---
+description: Cómo leer PokeAPI en Visor Pokémon. Usar al escribir el cliente, el catálogo, la búsqueda, la ficha, el equipo o la cobertura.
+alwaysApply: false
+---
+
+# PokeAPI
+
+La base es `https://pokeapi.co/api/v2`. Los contratos de paginación, nombres, sprites, búsqueda y cobertura están en `specs/diseno.md`. Cúmpelos.
+
+- Página de 20. El sprite de la rejilla sale del id. Los tipos y el nombre en español salen del detalle y de `pokemon-species`.
+- No recorras el listado entero ni dispares peticiones fuera de la página visible y del equipo.
+- La búsqueda usa el slug inglés de la API. El texto que se muestra al usuario es el nombre `es` de species, con el nombre de la API de respaldo.
+- La cobertura lee `damage_relations` de `/type/{slug}`. No calcules combate, doble tipo combinado, naturalezas ni EVs.
+- Guarda en memoria las respuestas ya pedidas durante la sesión. El equipo persiste solo ids en `localStorage`, clave `visor-equipo`.

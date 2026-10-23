@@ -1,0 +1,14 @@
+---
+description: Stack cerrado de Visor Pokémon
+globs: "src/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Stack
+
+- Vite, React y TypeScript, con el template `react-ts` de Create Vite.
+- React Router 7, paquete `react-router`, importando desde `react-router`.
+- Tailwind CSS 4 con el plugin `@tailwindcss/vite`. Los tokens viven en `@theme` dentro de `src/index.css`, como lista `specs/diseno.md`. No hay `tailwind.config.js`.
+- Fuentes con `@fontsource/ibm-plex-sans` y `@fontsource/ibm-plex-mono`.
+- Datos con `fetch` a PokeAPI. Sin backend, sin base de datos y sin librería de componentes.
+- El detalle de carpetas y rutas está en `specs/diseno.md`. Síguelo.

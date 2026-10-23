@@ -1,0 +1,16 @@
+---
+description: Apariencia de aparato plano de Visor Pokémon
+globs: "src/**/*.{tsx,css}"
+alwaysApply: false
+---
+
+# Apariencia
+
+La interfaz es un aparato plano: carcasa oscura y, dentro, una pantalla crema de alto contraste. Los tokens y la tabla de tipos están en `specs/diseno.md`. Usa esas utilidades (`bg-carcasa`, `bg-pantalla`, `text-tinta`, `bg-piloto`, `font-mono` y `bg-tipo-*`).
+
+- El cuerpo de la página es la carcasa. La zona de contenido es la pantalla, con borde grueso y sin sombra.
+- Un solo piloto rojo. El título visible es "VISOR POKÉMON". El catálogo es la pantalla de entrada. "Equipo" es un enlace secundario.
+- El número de ficha va en `font-mono`. El nombre va en la sans del theme.
+- Cada tipo usa su color de la tabla y el color de texto que esa fila indica.
+- No uses la paleta por defecto de Tailwind para pintar la app (`purple-*`, `gray-*`, `slate-*`, `white` como fondo de card).
+- No uses gradientes, cristal esmerilado (`backdrop-blur`) ni sombras blandas de neumorfismo (`shadow-lg`, `shadow-xl`, `shadow-2xl`).
