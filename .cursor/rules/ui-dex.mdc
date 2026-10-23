@@ -1,16 +1,18 @@
 ---
-description: Apariencia de aparato plano de Visor Pokémon
+description: Dirección visual de guía ilustrada de Visor Pokémon
 globs: "src/**/*.{tsx,css}"
 alwaysApply: false
 ---
 
 # Apariencia
 
-La interfaz es un aparato plano: carcasa oscura y, dentro, una pantalla crema de alto contraste. Los tokens y la tabla de tipos están en `specs/diseno.md`. Usa esas utilidades (`bg-carcasa`, `bg-pantalla`, `text-tinta`, `bg-piloto`, `font-mono` y `bg-tipo-*`).
+La interfaz es una guía ilustrada, cálida y contemporánea; no imita una consola ni una carcasa de hardware. Los tokens y la tabla de tipos están en `specs/diseno.md`. Usa esas utilidades (`bg-fondo`, `bg-fondo-salvia`, `bg-superficie`, `bg-superficie-suave`, `bg-superficie-sombra`, `text-tinta`, `text-tinta-suave`, `bg-marca`, `bg-marca-fuerte`, `bg-marca-suave`, `bg-acento`, `bg-acento-suave`, `font-sans`, `font-mono` y `bg-tipo-*`).
 
-- El cuerpo de la página es la carcasa. La zona de contenido es la pantalla, con borde grueso y sin sombra.
-- Un solo piloto rojo. El título visible es "VISOR POKÉMON". El catálogo es la pantalla de entrada. "Equipo" es un enlace secundario.
-- El número de ficha va en `font-mono`. El nombre va en la sans del theme.
+- El fondo general debe tener una base cálida con gradientes ambientales o veladuras de salvia y crema; no lo dejes como color plano. Las superficies también deben tener una variación tonal o capas de luz/sombra muy sutiles.
+- Usa radios generosos, bordes finos de bajo contraste y sombras discretas. Se admite un toque de skeuomorfismo cuidado (reflejo superior, borde interior o sombra inset muy ligera) para dar tactilidad; no dibujes un marco exterior ni una pantalla dentro de una carcasa.
+- La cabecera debe tener un emblema geométrico original, el nombre "Visor Pokémon" con presencia y la frase "Tu guía ilustrada para explorar Pokémon". "Catálogo" es el destino principal; "Equipo" es una acción claramente reconocible, no un enlace de texto perdido.
+- El contenido ocupa un ancho cómodo y amplio (`max-w-7xl`) y se adapta a móvil. Los sprites son protagonistas; el número va en `font-mono` y el nombre en la sans del theme.
 - Cada tipo usa su color de la tabla y el color de texto que esa fila indica.
 - No uses la paleta por defecto de Tailwind para pintar la app (`purple-*`, `gray-*`, `slate-*`, `white` como fondo de card).
-- No uses gradientes, cristal esmerilado (`backdrop-blur`) ni sombras blandas de neumorfismo (`shadow-lg`, `shadow-xl`, `shadow-2xl`).
+- Los matices basados en tipos deben ser tenues y localizados en el área de ilustración. No uses gradientes llamativos, texturas que compitan con el contenido, cristal esmerilado (`backdrop-blur`) ni sombras de neumorfismo (`shadow-lg`, `shadow-xl`, `shadow-2xl`).
+- Los controles muestran foco visible y estados legibles sin depender solo de `hover`; respeta `prefers-reduced-motion`.

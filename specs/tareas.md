@@ -6,11 +6,11 @@ Se hacen en orden. Una tarea por conversación, con `/implementar-tarea` y el id
 
 El cambio de requisitos C1, en `specs/requisitos.md`, no es una tarea de esta lista y no se implementa.
 
-## T1 — Esqueleto y marco
+## T1 — Esqueleto y marco visual
 
 - Responsable: Miembro 2.
 - Depende de: nada.
-- Hecho cuando: la app arranca en local, las tres rutas pintan el marco de `specs/diseno.md` y, dentro de la pantalla, el nombre de la ruta. Todavía no hay datos de PokeAPI. El aspecto usa los tokens del diseño (carcasa, pantalla, piloto, las dos fuentes) y no una paleta genérica.
+- Hecho cuando: la app arranca en local, las tres rutas comparten la cabecera de marca y la composición de guía ilustrada de `specs/diseno.md`, y cada ruta muestra su nombre como marcador de posición. Todavía no hay datos de PokeAPI. El aspecto usa los tokens de fondo, superficies, marca, acento y las dos fuentes; el fondo y las superficies tienen variaciones tonales sutiles con un toque táctil, no son rellenos planos ni una carcasa de dispositivo. No usa una paleta genérica.
 
 Pasos:
 
@@ -18,7 +18,7 @@ Pasos:
 2. Crea la plantilla en una carpeta temporal y trae al raíz solo lo de Vite: `npm create vite@latest vite-tmp -- --template react-ts`. Mueve `index.html`, `package.json`, `package-lock.json`, `vite.config.ts`, `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`, `eslint.config.js` si aparece, `public/` y `src/`. Borra `vite-tmp`.
 3. Instala `react-router`, `tailwindcss`, `@tailwindcss/vite`, `@fontsource/ibm-plex-sans` y `@fontsource/ibm-plex-mono`.
 4. Registra el plugin de Tailwind junto al de React en `vite.config.ts`. Sustituye `src/index.css` por el `@import` y el `@theme` de `specs/diseno.md`. Importa las fuentes en `src/main.tsx`.
-5. Crea `Marco.tsx` y las tres páginas como marcador de posición. En `App.tsx`, `BrowserRouter`, el marco y las rutas `/`, `/pokemon/:id` y `/equipo`. La ruta `/` es la de entrada.
+5. Crea `Marco.tsx` con la cabecera de marca, navegación adaptable y contenedor amplio definidos en `specs/diseno.md`, además de las tres páginas como marcador de posición. En `App.tsx`, `BrowserRouter`, el marco y las rutas `/`, `/pokemon/:id` y `/equipo`. La ruta `/` es la de entrada.
 6. `npm run dev` abre el marco. `npm run build` termina sin error.
 
 ## T2 — Cliente de PokeAPI

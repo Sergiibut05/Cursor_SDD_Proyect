@@ -1,6 +1,6 @@
 # Diseño — Visor Pokémon
 
-Las decisiones de aquí están cerradas. Una tarea no las cambia.
+La interfaz adopta una dirección de guía ilustrada: cálida, expresiva y contemporánea. No emula una consola ni una carcasa de hardware. La arquitectura, las rutas y los contratos de datos siguen siendo los definidos en esta especificación.
 
 ## Stack
 
@@ -20,22 +20,35 @@ Las decisiones de aquí están cerradas. Una tarea no las cambia.
 
 Cualquier otra ruta no entra en el MVP. No hace falta una página 404 dedicada.
 
+## Dirección visual
+
+La app se siente como una guía ilustrada y coleccionable, no como un dispositivo físico. Los Pokémon y sus ilustraciones son el foco; la interfaz aporta calidez, personalidad y una jerarquía clara sin competir con ellos.
+
+- Fondo general marfil cálido, superficies claras, tinta verde oscura y un acento botánico. El fondo de página no puede ser un color plano: combina una base marfil con veladuras amplias y muy sutiles en verde salvia y crema, mediante gradientes radiales o lineales de bajo contraste. Pueden añadirse grano o un patrón orgánico casi imperceptible con CSS, siempre detrás del contenido y sin imágenes externas.
+- La composición es amplia y respirada. El contenido usa un ancho máximo aproximado de `max-w-7xl`, centrado; no queda reducido a una columna estrecha en pantallas grandes.
+- Las superficies tienen radios generosos pero contenidos, bordes finos de bajo contraste, un degradado leve entre luz y sombra y sombras suaves para separar planos. Se admite un toque de skeuomorfismo cuidado —brillo superior tenue, borde interior fino o sombra inset muy ligera— para sugerir materiales y tactilidad. No se usan marcos negros gruesos, biseles de hardware ni neumorfismo blando.
+- IBM Plex Sans lleva títulos y texto. IBM Plex Mono se reserva para números de Pokédex y datos breves, no para el nombre de marca.
+- Los colores de tipo se usan en insignias compactas y en matices muy tenues del área de ilustración. No tiñen toda la interfaz ni sustituyen la paleta base.
+- Ninguna superficie visual principal —fondo, cabecera, búsqueda o tarjetas— debe parecer un rectángulo de color sólido: usa variación tonal o capas de luz y sombra de bajo contraste, manteniendo texto e ilustraciones nítidos.
+- Las transiciones son breves y discretas. Se respetan `prefers-reduced-motion`, el contraste y un foco visible para teclado; los controles táctiles tienen un área cómoda.
+
 ## Marco
 
-Todo el sitio va dentro del mismo aparato, definido en `src/components/Marco.tsx`.
+Todo el sitio comparte la cabecera y el contenedor de contenido de `src/components/Marco.tsx`.
 
-- El fondo de la página (`body`) es la carcasa: `bg-carcasa text-pantalla font-sans`.
-- Arriba, una barra con un círculo `bg-piloto` (el único rojo de la interfaz), el texto `VISOR POKÉMON` en `font-mono` con tracking amplio, el enlace principal "Catálogo" (`/`) y, aparte, el enlace "Equipo" (`/equipo`). El enlace de la ruta activa lleva subrayado. Entrar en la app abre el catálogo.
-- Debajo, la pantalla: `bg-pantalla text-tinta`, borde de 4 px `border-linea`, padding generoso, sin sombra y sin radio grande. El contenido de la ruta se pinta dentro.
-- El conjunto tiene un ancho máximo cómodo de leer (`max-w-5xl`) y queda centrado.
+- El fondo de `body` es `bg-fondo text-tinta font-sans`.
+- Una cabecera de marca contiene un emblema geométrico propio (sin logotipos oficiales), el nombre "Visor Pokémon" destacado y una frase breve de apoyo: "Tu guía ilustrada para explorar Pokémon". El conjunto no usa la estética de una etiqueta técnica ni una fuente monoespaciada para el título.
+- La navegación presenta "Catálogo" (`/`) como destino principal y "Equipo" (`/equipo`) como una acción claramente reconocible, con apariencia de botón y un pequeño motivo gráfico propio. La ruta activa se distingue con fondo y contraste, no solo con un subrayado. En móvil, las dos opciones siguen visibles y cómodas de pulsar.
+- La cabecera y el contenido comparten un ancho máximo `max-w-7xl` y quedan centrados. Hay separación generosa entre cabecera y contenido.
+- El contenido de cada ruta se pinta directamente sobre el fondo ambiental, organizado en secciones y superficies claras según la pantalla. No hay carcasa, marco exterior ni una única pantalla encajada dentro de otro aparato.
 
 ## Pantallas
 
-**Catálogo.** Rejilla de tarjetas. Cada tarjeta es un enlace a `/pokemon/:id` y muestra `#025` en mono, el nombre, el sprite y las insignias de tipo. Debajo de la rejilla, el botón "Cargar más". Encima, un campo de texto y un botón "Buscar". Los estados de R3 y R6 son texto dentro de la pantalla, no un modal.
+**Catálogo.** Encabezado de página con título claro y una frase breve de contexto. La búsqueda se agrupa en una superficie destacada y contiene un campo de texto y el botón "Buscar". La rejilla se adapta al espacio: una columna en móviles estrechos, dos en móvil amplio, tres en tableta y cuatro en escritorio. Cada tarjeta es un enlace a `/pokemon/:id`, con una zona generosa para el sprite sobre un matiz suave, el número `#025` en mono, el nombre como dato principal y las insignias de tipo. Las tarjetas usan un fondo claro con variación tonal leve, radio medio/grande, borde fino con un reflejo interior discreto y sombra suave; en `hover` se elevan apenas y el sprite puede crecer ligeramente. El botón "Cargar más" queda después de la rejilla. Los estados de R3 y R6 aparecen junto a la búsqueda o al contenido relacionado, no en un modal.
 
-**Ficha.** Sprite grande, número, nombre, insignias, altura, peso y las seis estadísticas en el orden de la API (PS, Ataque, Defensa, Ataque especial, Defensa especial, Velocidad), cada una con su nombre y su valor numérico. Un enlace "Volver al catálogo". A un lado, sin tapar esos datos, un botón "Añadir al equipo" o "Quitar del equipo" según el id esté guardado. La ficha se lee igual si nadie pulsa ese botón.
+**Ficha.** Composición editorial: ilustración oficial grande en una superficie con matiz suave y profundidad sutil, acompañada de número, nombre destacado e insignias. Altura y peso aparecen en un grupo de datos fácil de recorrer. Las seis estadísticas mantienen el orden de la API (PS, Ataque, Defensa, Ataque especial, Defensa especial, Velocidad), cada una con su nombre y su valor numérico claramente asociados. Un enlace "Volver al catálogo". El botón "Añadir al equipo" o "Quitar del equipo" es visible junto a la información, sin taparla. La ficha se lee igual si nadie pulsa ese botón.
 
-**Equipo.** Apartado extra. Lista de los Pokémon guardados, cada uno con sprite, nombre y un control "Quitar". Si no hay ninguno, el texto de R13 y nada más. Si hay alguno, dos grupos de insignias: "Golpea con ventaja" y "Recibe daño doble".
+**Equipo.** Apartado extra con encabezado y una lista de tarjetas claras de los Pokémon guardados, cada uno con sprite, nombre y un control "Quitar". Si no hay ninguno, el texto de R13 y nada más. Si hay alguno, dos grupos visualmente diferenciados de insignias: "Golpea con ventaja" y "Recibe daño doble".
 
 ## Datos
 
@@ -95,7 +108,7 @@ src/
   pages/EquipoPage.tsx
 ```
 
-`InsigniaTipo` recibe un `TipoId` y pinta la etiqueta española con las clases de la tabla. No hay más componentes de los que hagan falta para estas tres pantallas.
+`InsigniaTipo` recibe un `TipoId` y pinta la etiqueta española con las clases de la tabla. Las insignias tienen forma de píldora compacta, con contraste legible y sin bisel. No hay más componentes de los que hagan falta para estas tres pantallas.
 
 ## Tokens
 
@@ -106,15 +119,23 @@ En `src/index.css`, después de `@import "tailwindcss"`:
   --font-sans: "IBM Plex Sans", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
-  --color-carcasa: #161311;
-  --color-pantalla: #f4efe4;
-  --color-tinta: #1c1915;
-  --color-piloto: #e23d2b;
-  --color-linea: #2a2420;
+  --color-fondo: #f5f3ec;
+  --color-fondo-salvia: #e8eee5;
+  --color-superficie: #fffdf8;
+  --color-superficie-suave: #edf2e9;
+  --color-superficie-sombra: #f0ede5;
+  --color-tinta: #25332d;
+  --color-tinta-suave: #66736b;
+  --color-linea: #e3e7de;
+  --color-marca: #2f6b55;
+  --color-marca-fuerte: #245340;
+  --color-marca-suave: #e3efe6;
+  --color-acento: #e8ad45;
+  --color-acento-suave: #fff1cf;
 
   --color-tipo-normal: #a8a77a;
   --color-tipo-fire: #ee8130;
-  --color-tipo-water: #6390f0;
+  --color-tipo-water: #739cf4;
   --color-tipo-grass: #7ac74c;
   --color-tipo-electric: #f7d02c;
   --color-tipo-ice: #96d9d6;
@@ -122,7 +143,7 @@ En `src/index.css`, después de `@import "tailwindcss"`:
   --color-tipo-poison: #a33ea1;
   --color-tipo-ground: #e2bf65;
   --color-tipo-flying: #a98ff3;
-  --color-tipo-psychic: #f95587;
+  --color-tipo-psychic: #f6799c;
   --color-tipo-bug: #a6b91a;
   --color-tipo-rock: #b6a136;
   --color-tipo-ghost: #735797;
@@ -133,34 +154,34 @@ En `src/index.css`, después de `@import "tailwindcss"`:
 }
 ```
 
-Eso crea utilidades `bg-carcasa`, `text-tinta`, `bg-tipo-fire` y el resto. Definir estos colores no borra la paleta por defecto de Tailwind: la rule `ui-dex` prohíbe usarla para pintar la app.
+Eso crea utilidades como `bg-fondo`, `bg-fondo-salvia`, `bg-superficie`, `bg-superficie-sombra`, `text-tinta`, `bg-marca` y `bg-tipo-fire`. Definir estos colores no borra la paleta por defecto de Tailwind: la rule `ui-dex` prohíbe usarla para pintar la app. Los tokens sirven de base a los gradientes CSS sutiles del fondo y las superficies; no se sustituye el ambiente por un relleno plano.
 
 En `src/main.tsx` se importan los CSS de Fontsource (sans 400 y 600, mono 500) antes que `./index.css`.
 
 ## Tabla de tipos
 
-El texto de la insignia es `tinta` sobre los fondos claros y `pantalla` sobre los oscuros.
+El texto de la insignia usa el color indicado para cada fondo y debe conservar contraste legible. La asociación cromática de cada tipo se mantiene, con los matices afinados para legibilidad; el estilo de píldora no cambia el dato ni su etiqueta.
 
 | Slug | Etiqueta | Fondo | Texto |
 | --- | --- | --- | --- |
-| normal | Normal | `bg-tipo-normal` | tinta |
-| fire | Fuego | `bg-tipo-fire` | pantalla |
-| water | Agua | `bg-tipo-water` | pantalla |
-| grass | Planta | `bg-tipo-grass` | tinta |
-| electric | Eléctrico | `bg-tipo-electric` | tinta |
-| ice | Hielo | `bg-tipo-ice` | tinta |
-| fighting | Lucha | `bg-tipo-fighting` | pantalla |
-| poison | Veneno | `bg-tipo-poison` | pantalla |
-| ground | Tierra | `bg-tipo-ground` | tinta |
-| flying | Volador | `bg-tipo-flying` | tinta |
-| psychic | Psíquico | `bg-tipo-psychic` | pantalla |
-| bug | Bicho | `bg-tipo-bug` | tinta |
-| rock | Roca | `bg-tipo-rock` | tinta |
-| ghost | Fantasma | `bg-tipo-ghost` | pantalla |
-| dragon | Dragón | `bg-tipo-dragon` | pantalla |
-| dark | Siniestro | `bg-tipo-dark` | pantalla |
-| steel | Acero | `bg-tipo-steel` | tinta |
-| fairy | Hada | `bg-tipo-fairy` | tinta |
+| normal | Normal | `bg-tipo-normal` | `text-tinta` |
+| fire | Fuego | `bg-tipo-fire` | `text-tinta` |
+| water | Agua | `bg-tipo-water` | `text-tinta` |
+| grass | Planta | `bg-tipo-grass` | `text-tinta` |
+| electric | Eléctrico | `bg-tipo-electric` | `text-tinta` |
+| ice | Hielo | `bg-tipo-ice` | `text-tinta` |
+| fighting | Lucha | `bg-tipo-fighting` | `text-superficie` |
+| poison | Veneno | `bg-tipo-poison` | `text-superficie` |
+| ground | Tierra | `bg-tipo-ground` | `text-tinta` |
+| flying | Volador | `bg-tipo-flying` | `text-tinta` |
+| psychic | Psíquico | `bg-tipo-psychic` | `text-tinta` |
+| bug | Bicho | `bg-tipo-bug` | `text-tinta` |
+| rock | Roca | `bg-tipo-rock` | `text-tinta` |
+| ghost | Fantasma | `bg-tipo-ghost` | `text-superficie` |
+| dragon | Dragón | `bg-tipo-dragon` | `text-superficie` |
+| dark | Siniestro | `bg-tipo-dark` | `text-superficie` |
+| steel | Acero | `bg-tipo-steel` | `text-tinta` |
+| fairy | Hada | `bg-tipo-fairy` | `text-tinta` |
 
 ## Cambio reservado
 
