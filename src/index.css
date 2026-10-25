@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-fondo: #f5f3ec;
+  --color-fondo-salvia: #e8eee5;
+  --color-superficie: #fffdf8;
+  --color-superficie-suave: #edf2e9;
+  --color-superficie-sombra: #f0ede5;
+  --color-tinta: #25332d;
+  --color-tinta-suave: #66736b;
+  --color-linea: #e3e7de;
+  --color-marca: #2f6b55;
+  --color-marca-fuerte: #245340;
+  --color-marca-suave: #e3efe6;
+  --color-acento: #e8ad45;
+  --color-acento-suave: #fff1cf;
+
+  --color-tipo-normal: #a8a77a;
+  --color-tipo-fire: #ee8130;
+  --color-tipo-water: #739cf4;
+  --color-tipo-grass: #7ac74c;
+  --color-tipo-electric: #f7d02c;
+  --color-tipo-ice: #96d9d6;
+  --color-tipo-fighting: #c22e28;
+  --color-tipo-poison: #a33ea1;
+  --color-tipo-ground: #e2bf65;
+  --color-tipo-flying: #a98ff3;
+  --color-tipo-psychic: #f6799c;
+  --color-tipo-bug: #a6b91a;
+  --color-tipo-rock: #b6a136;
+  --color-tipo-ghost: #735797;
+  --color-tipo-dragon: #6f35fc;
+  --color-tipo-dark: #705746;
+  --color-tipo-steel: #b7b7ce;
+  --color-tipo-fairy: #d685ad;
+}
+
+@layer base {
+  html {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100svh;
+    color: var(--color-tinta);
+    font-family: var(--font-sans);
+    background-color: var(--color-fondo);
+    background-image:
+      radial-gradient(1200px 640px at 8% -12%, var(--color-fondo-salvia) 0%, transparent 58%),
+      radial-gradient(900px 520px at 100% 0%, var(--color-acento-suave) 0%, transparent 52%),
+      linear-gradient(180deg, color-mix(in srgb, var(--color-fondo-salvia) 42%, transparent) 0%, transparent 38%);
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.045;
+    background-image: radial-gradient(circle at 1px 1px, var(--color-tinta) 0.7px, transparent 1.2px);
+    background-size: 22px 22px;
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+    min-height: 100svh;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

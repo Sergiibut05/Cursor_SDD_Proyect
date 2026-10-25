@@ -4,17 +4,43 @@ Visor Pokémon es un catálogo de Pokémon (PokeAPI) para buscar y ver la ficha.
 
 La investigación está en [docs/metodologia.md](docs/metodologia.md). El producto está cerrado en [specs/requisitos.md](specs/requisitos.md), [specs/diseno.md](specs/diseno.md) y [specs/tareas.md](specs/tareas.md). El agente se configura con `AGENTS.md` y con la carpeta `.cursor/`.
 
-La primera tarea de código es la T1 de `specs/tareas.md`. No hay aplicación todavía.
+La primera tarea de código es la T1 de `specs/tareas.md`.
 
 ## Equipo
 
 - Miembro 1: Sergii Butrii
-- Miembro 2:
+- Miembro 2: Cristian Sánchez
 - Miembro 3:
 
 ## Cómo ejecutar
 
-Pendiente. Se completa cuando la T1 deje el proyecto arrancando en local.
+Hace falta tener Node.js y npm instalados, además de conexión a internet para consultar PokeAPI.
+
+Desde la raíz del proyecto, instala las dependencias:
+
+```sh
+npm install
+```
+
+Arranca la aplicación en modo desarrollo:
+
+```sh
+npm run dev
+```
+
+Abre la dirección local que imprime Vite en la terminal (normalmente `http://localhost:5173/`).
+
+Para generar la versión de producción:
+
+```sh
+npm run build
+```
+
+Rutas:
+
+- `/`: catálogo y búsqueda.
+- `/pokemon/:id`: ficha del Pokémon.
+- `/equipo`: apartado extra para guardar un equipo.
 
 ## Bibliografía
 
