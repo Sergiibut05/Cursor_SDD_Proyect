@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:pages": "tsc -b && vite build --mode github-pages && node scripts/copy-pages-fallback.mjs",
     "lint": "oxlint",
     "preview": "vite preview"
   },

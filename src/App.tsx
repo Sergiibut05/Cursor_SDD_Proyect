@@ -6,7 +6,7 @@ import FichaPage from './pages/FichaPage.tsx'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route element={<Marco />}>
           <Route path="/" element={<CatalogoPage />} />

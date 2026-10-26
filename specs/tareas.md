@@ -62,3 +62,16 @@ Hay que dejar escrito:
 1. Quitar la frase que dice que todavía no hay aplicación.
 2. En "Cómo ejecutar": hace falta Node.js y npm, conexión a internet para PokeAPI, `npm install`, `npm run dev` y la dirección local que imprime Vite. También `npm run build` para generar la versión de producción.
 3. Una línea por ruta: `/` catálogo y búsqueda, `/pokemon/:id` ficha, `/equipo` apartado extra.
+
+## T8 — Publicación automática en GitHub Pages
+
+- Responsable: Miembro 2.
+- Depende de: T7.
+- Hecho cuando: la aplicación se publica en GitHub Pages mediante GitHub Actions y se vuelve a desplegar automáticamente al hacer push a `main`. Las rutas `/`, `/pokemon/:id` y `/equipo` funcionan también al abrirlas directamente o recargar la página. El README explica la configuración manual única necesaria en GitHub.
+
+Pasos:
+
+1. Configura Vite y React Router para servir el proyecto desde la URL de Pages del repositorio, sin cambiar las rutas de la aplicación en local.
+2. Añade un workflow de GitHub Actions que construya el proyecto y publique el artefacto en Pages al hacer push a `main`; también permite iniciarlo manualmente desde Actions.
+3. Conserva la navegación de las rutas actuales cuando Pages sirve una ruta directa o se recarga.
+4. Documenta en el README el ajuste manual de Pages a la fuente "GitHub Actions" y dónde consultar la URL y el resultado del despliegue.

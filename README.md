@@ -42,6 +42,14 @@ Rutas:
 - `/pokemon/:id`: ficha del Pokémon.
 - `/equipo`: apartado extra para guardar un equipo.
 
+## Publicación en GitHub Pages
+
+La publicación se ejecuta automáticamente en cada `push` a `main`. También se puede iniciar manualmente desde la pestaña **Actions**, seleccionando **Deploy to GitHub Pages** y pulsando **Run workflow**.
+
+La primera vez, en GitHub abre **Settings > Pages** y cambia **Build and deployment > Source** a **GitHub Actions**. No hace falta configurar una rama ni una carpeta de publicación.
+
+La URL del sitio aparece en **Settings > Pages** y en el entorno `github-pages` del despliegue. Para consultar el resultado o los errores, abre **Actions** y selecciona la ejecución del workflow **Deploy to GitHub Pages**.
+
 ## Bibliografía
 
 La lista comentada está en [docs/metodologia.md](docs/metodologia.md). Enlaces directos:
