@@ -184,6 +184,33 @@ El texto de la insignia usa el color indicado para cada fondo y debe conservar c
 | steel | Acero | `bg-tipo-steel` | `text-tinta` |
 | fairy | Hada | `bg-tipo-fairy` | `text-tinta` |
 
+## Tarjeta holográfica (T10)
+
+Apartado extra de pulido visual. Las tarjetas del catálogo (`TarjetaPokemon`, también en resultados por prefijo y en el filtro de amenaza) se comportan como una carta coleccionable con lámina holográfica, a la manera de las cartas "holo" del juego de cartas. No cambia datos, rutas, textos ni contratos: solo el aspecto y la interacción de la tarjeta. La ficha y `/equipo` no llevan este efecto.
+
+Referencia de técnica: el efecto holográfico en CSS popularizado por Simon Goellner (simeydotme, `pokemon-cards-css`, GPL-3.0). Se toma la idea —variables CSS que siguen al puntero, inclinación 3D, capas con degradados y `mix-blend-mode`— pero la implementación es propia; no se copia código ni imágenes de ese repositorio y no se añaden dependencias.
+
+**En reposo.** La tarjeta se ve como hasta ahora: superficie clara, borde fino, sombra suave. Como única pista de que es "holo", el borde del área de ilustración puede llevar un filo iridiscente muy tenue y estático.
+
+**Interacción con puntero fino** (`(hover: hover) and (pointer: fine)`):
+
+- La tarjeta se inclina en 3D siguiendo la posición del puntero, con `perspective` en el contenedor y un giro máximo de unos 12° por eje. El movimiento se suaviza (interpolación por `requestAnimationFrame` o muelle sencillo), sin saltos al entrar ni al salir; al salir, vuelve al reposo con suavidad.
+- La posición del puntero se expone como propiedades CSS personalizadas (por ejemplo `--holo-x`, `--holo-y` en porcentaje, `--holo-rx`, `--holo-ry` en grados y `--holo-intensidad` de 0 a 1). Se escriben directamente en el estilo del elemento mediante una referencia: el movimiento del puntero no provoca renders de React.
+- **Lámina holográfica** sobre el área de ilustración, como la ventana de arte de una carta holo: un degradado iridiscente repetido (arcoíris suave en bandas diagonales) combinado con un patrón fino de brillo, con `mix-blend-mode` (`color-dodge`, `overlay` o `soft-light`) y su posición desplazada según el puntero, de modo que los colores "corran" al mover la carta. El matiz dominante se inclina hacia el color del primer tipo del Pokémon (`--color-tipo-*`), sin perder el arcoíris.
+- **Destello** (glare): un brillo radial claro centrado en la posición del puntero que recorre toda la tarjeta, de baja opacidad sobre la zona de texto para que número, nombre e insignias sigan nítidos y legibles.
+- **Profundidad:** el sprite flota ligeramente por delante de la lámina (desplazamiento en Z o paralaje leve) y la sombra de la tarjeta se desplaza en sentido contrario a la inclinación, siempre con sombras arbitrarias suaves.
+- Toda la capa holográfica tiene `pointer-events: none` y `aria-hidden`; nunca intercepta el clic ni cambia el enlace.
+
+**Teclado.** Con `focus-visible`, la tarjeta muestra el foco visible de siempre y la lámina hace un barrido automático breve y suave (sin depender del puntero), de modo que el efecto no dependa solo de `hover`.
+
+**Táctil y sin hover.** Sin inclinación ni seguimiento: el desplazamiento de la página no se ve afectado. Basta el reposo con el filo iridiscente.
+
+**Movimiento reducido.** Con `prefers-reduced-motion: reduce` no hay inclinación, paralaje ni barridos animados. Durante `hover` o foco puede verse la lámina estática con baja opacidad.
+
+**Límites.** Sin `backdrop-blur`, sin `shadow-lg`/`shadow-xl`/`shadow-2xl` y sin la paleta por defecto de Tailwind; los colores salen de los tokens de `@theme` y de la tabla de tipos. Sin imágenes externas: todo se dibuja con CSS. Sin librerías nuevas. El catálogo sigue fluido con 20 o más tarjetas visibles (solo la tarjeta bajo el puntero anima).
+
+**Piezas.** La lógica de interacción vive en `src/components/TarjetaPokemon.tsx` o en un módulo pequeño junto a ella (por ejemplo `src/components/holo.ts` con el cálculo puro de posición e inclinación). Los estilos de las capas viven en `src/index.css`, en una capa `@layer components`, usando las variables anteriores.
+
 ## C1 — Búsqueda y filtro por cobertura
 
 La implementación corresponde a T9 de `specs/tareas.md`. El catálogo acepta `?amenaza={slug}`. Con ese parámetro se pide `GET /type/{slug}` y se leen los tipos de `damage_relations.double_damage_from`: son los que golpean a la amenaza con ventaja. De cada uno de esos tipos se usa el array `pokemon` que ya devuelve `GET /type/{ese-tipo}`, y la rejilla muestra la unión, sin la paginación normal. La búsqueda y las sugerencias se muestran desactivadas; "Quitar filtro" navega a `/`.

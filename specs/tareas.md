@@ -87,3 +87,17 @@ Pasos:
 3. Al enviar la consulta, abre la ficha si hay coincidencia exacta por nombre visible o slug de API; en caso contrario muestra todos los resultados que empiezan por la consulta, sin paginación. Si no hay resultados, conserva el catálogo y muestra el mensaje de R6.
 4. Convierte los tipos de "Recibe daño doble" en controles que navegan al catálogo con `?amenaza={slug}`. Calcula los Pokémon que pueden golpear a esa amenaza con ventaja a partir de las relaciones de tipos de PokeAPI, muestra la unión sin paginación y ofrece "Quitar filtro".
 5. Desactiva búsqueda y sugerencias con un filtro de amenaza activo. Verifica los estados de carga y error, las coincidencias y la navegación por teclado, además del comportamiento existente del catálogo, búsqueda exacta y cobertura.
+
+## T10 — Tarjetas holográficas (extra)
+
+- Responsable: Miembro 2.
+- Depende de: T9.
+- Hecho cuando: las tarjetas del catálogo cumplen la sección "Tarjeta holográfica (T10)" de `specs/diseno.md`. Con ratón, la tarjeta se inclina en 3D siguiendo el puntero y vuelve al reposo con suavidad; la lámina iridiscente del área de ilustración cambia con la posición del puntero y se tiñe hacia el color del primer tipo; un destello sigue al puntero sin restar legibilidad a número, nombre e insignias. Con teclado, el foco sigue siendo visible y la lámina hace un barrido breve. Sin hover, en táctil o con `prefers-reduced-motion`, no hay inclinación ni animación. R1, R2, R3, R6 y R7 siguen cumpliéndose: la tarjeta sigue siendo un único enlace a `/pokemon/:id` con el mismo contenido. `npm run build` y `npm run lint` terminan sin error.
+
+Pasos:
+
+1. Añade al componente de tarjeta las capas decorativas (lámina y destello) con `aria-hidden` y `pointer-events: none`, sin cambiar el contenido ni la estructura del enlace.
+2. Escribe el cálculo puro de posición e inclinación (porcentajes del puntero, giro limitado) y la actualización de propiedades CSS mediante una referencia y `requestAnimationFrame`, sin estado de React por movimiento. Si el cálculo vive en un módulo aparte, cúbrelo con una prueba en `tests/` como las existentes.
+3. Escribe en `src/index.css`, dentro de `@layer components`, los estilos de inclinación, lámina iridiscente, brillo, destello y profundidad, usando los tokens de `@theme` y el color de tipo.
+4. Añade el barrido con `focus-visible` y desactiva inclinación y animaciones con `(hover: none)`, `(pointer: coarse)` y `prefers-reduced-motion: reduce`.
+5. Comprueba en el navegador el catálogo, la búsqueda por prefijo y el filtro de amenaza: el efecto aparece, el clic abre la ficha, el texto se lee bien y el desplazamiento sigue fluido.

@@ -83,3 +83,266 @@
     }
   }
 }
+
+@layer components {
+  .holo-tarjeta {
+    --holo-x: 50%;
+    --holo-y: 50%;
+    --holo-dx: 0;
+    --holo-dy: 0;
+    --holo-rx: 0deg;
+    --holo-ry: 0deg;
+    --holo-intensidad: 0;
+    --holo-tipo: var(--color-marca);
+
+    --holo-banda-1: color-mix(in oklab, var(--color-tipo-fighting) 70%, var(--holo-tipo));
+    --holo-banda-2: color-mix(in oklab, var(--color-tipo-fire) 70%, var(--holo-tipo));
+    --holo-banda-3: color-mix(in oklab, var(--color-tipo-electric) 70%, var(--holo-tipo));
+    --holo-banda-4: color-mix(in oklab, var(--color-tipo-grass) 70%, var(--holo-tipo));
+    --holo-banda-5: color-mix(in oklab, var(--color-tipo-ice) 70%, var(--holo-tipo));
+    --holo-banda-6: color-mix(in oklab, var(--color-tipo-water) 70%, var(--holo-tipo));
+    --holo-banda-7: color-mix(in oklab, var(--color-tipo-dragon) 70%, var(--holo-tipo));
+    --holo-banda-8: color-mix(in oklab, var(--color-tipo-psychic) 70%, var(--holo-tipo));
+    --holo-luz: var(--color-superficie);
+    --holo-sombra: var(--color-tinta);
+
+    perspective: 900px;
+  }
+
+  .holo-carta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    box-shadow:
+      calc(var(--holo-dx) * -12px) calc(10px + var(--holo-dy) * -9px + var(--holo-intensidad) * 8px)
+        calc(24px + var(--holo-intensidad) * 12px) -18px
+        color-mix(in srgb, var(--holo-sombra) calc(32% + var(--holo-intensidad) * 14%), transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--holo-luz) 90%, transparent);
+  }
+
+  /* Destello de toda la tarjeta: queda por debajo del texto, que nunca se aclara. */
+  .holo-destello {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: var(--holo-intensidad);
+    background: radial-gradient(
+      farthest-corner circle at var(--holo-x) var(--holo-y),
+      color-mix(in srgb, var(--holo-luz) 96%, transparent) 0%,
+      color-mix(in srgb, var(--color-acento-suave) 55%, transparent) 20%,
+      transparent 48%,
+      color-mix(in srgb, var(--holo-sombra) 10%, transparent) 100%
+    );
+    mask-image: linear-gradient(to bottom, #000 0 58%, rgb(0 0 0 / 0.45) 100%);
+  }
+
+  .holo-ventana {
+    isolation: isolate;
+  }
+
+  /* Filo iridiscente estático y tenue del área de ilustración. */
+  .holo-ventana::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    padding: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      125deg,
+      var(--holo-banda-2),
+      var(--holo-banda-3),
+      var(--holo-banda-4),
+      var(--holo-banda-6),
+      var(--holo-banda-8)
+    );
+    background-size: 200% 200%;
+    background-position: calc(50% + var(--holo-dx) * 50%) calc(50% + var(--holo-dy) * 50%);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: calc(0.38 + var(--holo-intensidad) * 0.5);
+  }
+
+  /* Brillo especular sobre el sprite. */
+  .holo-ventana::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+    opacity: calc(var(--holo-intensidad) * 0.9);
+    background: radial-gradient(
+      circle at var(--holo-x) var(--holo-y),
+      color-mix(in srgb, var(--holo-luz) 85%, transparent) 0%,
+      color-mix(in srgb, var(--holo-luz) 25%, transparent) 28%,
+      transparent 55%
+    );
+    mix-blend-mode: overlay;
+  }
+
+  .holo-lamina {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: calc(var(--holo-intensidad) * 0.74);
+    background-image:
+      radial-gradient(
+        circle at var(--holo-x) var(--holo-y),
+        color-mix(in srgb, var(--holo-luz) 55%, transparent) 0%,
+        transparent 30%
+      ),
+      linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--holo-tipo) 38%, transparent),
+        transparent 75%
+      ),
+      repeating-linear-gradient(
+        118deg,
+        var(--holo-banda-1) 0%,
+        var(--holo-banda-2) 5%,
+        var(--holo-banda-3) 10%,
+        var(--holo-banda-4) 15%,
+        var(--holo-banda-5) 20%,
+        var(--holo-banda-6) 25%,
+        var(--holo-banda-7) 30%,
+        var(--holo-banda-8) 35%,
+        var(--holo-banda-1) 40%
+      );
+    background-size: 100% 100%, 100% 100%, 280% 280%;
+    background-position:
+      center,
+      center,
+      calc(50% + var(--holo-dx) * 45%) calc(50% + var(--holo-dy) * 45%);
+    mask-image: radial-gradient(
+      farthest-corner circle at var(--holo-x) var(--holo-y),
+      #000 0%,
+      rgb(0 0 0 / 0.7) 55%,
+      rgb(0 0 0 / 0.4) 100%
+    );
+  }
+
+  /* Patrón fino de brillo: rombos que se encienden sobre las bandas. */
+  .holo-lamina::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        62deg,
+        transparent 0 4px,
+        color-mix(in srgb, var(--holo-luz) 60%, transparent) 4px 5px
+      ),
+      repeating-linear-gradient(
+        -62deg,
+        transparent 0 4px,
+        color-mix(in srgb, var(--holo-luz) 60%, transparent) 4px 5px
+      );
+    background-position:
+      calc(var(--holo-dx) * 5px) calc(var(--holo-dy) * 5px),
+      calc(var(--holo-dx) * -5px) calc(var(--holo-dy) * -5px);
+    mix-blend-mode: color-dodge;
+    mask-image: radial-gradient(
+      circle at var(--holo-x) var(--holo-y),
+      #000 0%,
+      rgb(0 0 0 / 0.35) 45%,
+      transparent 80%
+    );
+  }
+
+  /* Reflejos metálicos que corren en sentido contrario a las bandas. */
+  .holo-lamina::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      118deg,
+      transparent 0%,
+      color-mix(in srgb, var(--holo-luz) 75%, transparent) 3%,
+      transparent 6%,
+      color-mix(in srgb, var(--holo-sombra) 22%, transparent) 9.5%,
+      transparent 13%
+    );
+    background-size: 240% 240%;
+    background-position: calc(50% - var(--holo-dx) * 35%) calc(50% - var(--holo-dy) * 35%);
+    mix-blend-mode: overlay;
+  }
+
+  .holo-sprite {
+    filter: drop-shadow(0 12px 10px color-mix(in srgb, var(--holo-sombra) 12%, transparent));
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .holo-tarjeta[data-holo] .holo-carta {
+      will-change: transform;
+      transform: rotateX(var(--holo-rx)) rotateY(var(--holo-ry))
+        translateZ(calc(var(--holo-intensidad) * 12px));
+    }
+
+    /* Paralaje: el halo queda al fondo y el sprite flota por delante de la lámina. */
+    .holo-tarjeta[data-holo] .holo-halo {
+      transform: translate(calc(var(--holo-dx) * 6px), calc(var(--holo-dy) * 6px))
+        scale(calc(1 + var(--holo-intensidad) * 0.12));
+    }
+
+    .holo-tarjeta[data-holo] .holo-sprite {
+      transform: translate(calc(var(--holo-dx) * -9px), calc(var(--holo-dy) * -9px))
+        scale(calc(1 + var(--holo-intensidad) * 0.07));
+      filter: drop-shadow(
+        calc(var(--holo-dx) * -7px) calc(12px + var(--holo-dy) * -6px + var(--holo-intensidad) * 4px) 10px
+          color-mix(in srgb, var(--holo-sombra) calc(12% + var(--holo-intensidad) * 8%), transparent)
+      );
+    }
+
+    .holo-tarjeta:focus-visible .holo-lamina {
+      animation: holo-barrido 1.3s cubic-bezier(0.3, 0.1, 0.3, 1) 1;
+    }
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    .holo-carta,
+    .holo-halo,
+    .holo-sprite {
+      transform: none;
+    }
+
+    .holo-lamina {
+      animation: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .holo-carta,
+    .holo-halo,
+    .holo-sprite {
+      transform: none;
+    }
+
+    .holo-lamina {
+      animation: none;
+    }
+
+    .holo-tarjeta:hover .holo-lamina,
+    .holo-tarjeta:focus-visible .holo-lamina {
+      opacity: 0.22;
+    }
+  }
+}
+
+@keyframes holo-barrido {
+  0% {
+    opacity: 0;
+    background-position: center, center, 0% 0%;
+  }
+  35% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    background-position: center, center, 100% 100%;
+  }
+}
