@@ -101,3 +101,15 @@ Pasos:
 3. Escribe en `src/index.css`, dentro de `@layer components`, los estilos de inclinación, lámina iridiscente, brillo, destello y profundidad, usando los tokens de `@theme` y el color de tipo.
 4. Añade el barrido con `focus-visible` y desactiva inclinación y animaciones con `(hover: none)`, `(pointer: coarse)` y `prefers-reduced-motion: reduce`.
 5. Comprueba en el navegador el catálogo, la búsqueda por prefijo y el filtro de amenaza: el efecto aparece, el clic abre la ficha, el texto se lee bien y el desplazamiento sigue fluido.
+
+## T11 — Paleta holográfica según el tipo (extra)
+
+- Responsable: Miembro 2.
+- Depende de: T10.
+- Hecho cuando: la lámina holográfica de cada tarjeta usa una paleta derivada del primer tipo del Pokémon, de modo que los colores varían perceptiblemente entre tipos sin perder el aspecto iridiscente ni la nitidez del sprite. El segundo tipo puede actuar como acento. La tarjeta conserva el mismo contenido, enlace y comportamiento de interacción, y solo cambia la paleta del efecto holográfico. `npm run build` y `npm run lint` terminan sin error.
+
+Pasos:
+
+1. Sustituye la secuencia arcoíris fija por franjas y brillos derivados de los tokens del primer tipo, pudiendo incorporar el segundo tipo como acento.
+2. Conserva contraste y legibilidad del sprite y limita el cambio visual a las capas holográficas de la tarjeta.
+3. Verifica el resultado con tarjetas de tipos distintos, incluyendo una de tipo único y otra de tipo doble.

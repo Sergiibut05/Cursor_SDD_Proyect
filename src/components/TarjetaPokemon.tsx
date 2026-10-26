@@ -123,8 +123,14 @@ export default function TarjetaPokemon({ pokemon }: TarjetaPokemonProps) {
   }
 
   const tipoPrincipal = pokemon.tipos[0];
+  const tipoSecundario = pokemon.tipos[1];
   const estiloTipo = tipoPrincipal
-    ? ({ "--holo-tipo": `var(--color-tipo-${tipoPrincipal})` } as CSSProperties)
+    ? ({
+        "--holo-tipo": `var(--color-tipo-${tipoPrincipal})`,
+        ...(tipoSecundario
+          ? { "--holo-tipo-secundario": `var(--color-tipo-${tipoSecundario})` }
+          : {}),
+      } as CSSProperties)
     : undefined;
 
   return (

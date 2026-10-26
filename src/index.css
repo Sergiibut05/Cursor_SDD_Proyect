@@ -94,15 +94,16 @@
     --holo-ry: 0deg;
     --holo-intensidad: 0;
     --holo-tipo: var(--color-marca);
+    --holo-acento: var(--holo-tipo-secundario, var(--holo-tipo));
 
-    --holo-banda-1: color-mix(in oklab, var(--color-tipo-fighting) 70%, var(--holo-tipo));
-    --holo-banda-2: color-mix(in oklab, var(--color-tipo-fire) 70%, var(--holo-tipo));
-    --holo-banda-3: color-mix(in oklab, var(--color-tipo-electric) 70%, var(--holo-tipo));
-    --holo-banda-4: color-mix(in oklab, var(--color-tipo-grass) 70%, var(--holo-tipo));
-    --holo-banda-5: color-mix(in oklab, var(--color-tipo-ice) 70%, var(--holo-tipo));
-    --holo-banda-6: color-mix(in oklab, var(--color-tipo-water) 70%, var(--holo-tipo));
-    --holo-banda-7: color-mix(in oklab, var(--color-tipo-dragon) 70%, var(--holo-tipo));
-    --holo-banda-8: color-mix(in oklab, var(--color-tipo-psychic) 70%, var(--holo-tipo));
+    --holo-banda-1: color-mix(in oklab, var(--holo-tipo) 40%, var(--color-superficie));
+    --holo-banda-2: color-mix(in oklab, var(--holo-tipo) 78%, var(--color-superficie));
+    --holo-banda-3: color-mix(in oklab, var(--holo-tipo) 68%, var(--holo-acento));
+    --holo-banda-4: color-mix(in oklab, var(--holo-tipo) 74%, var(--color-acento));
+    --holo-banda-5: color-mix(in oklab, var(--holo-tipo) 58%, var(--color-superficie));
+    --holo-banda-6: color-mix(in oklab, var(--holo-tipo) 62%, var(--holo-acento));
+    --holo-banda-7: color-mix(in oklab, var(--holo-tipo) 76%, var(--color-marca));
+    --holo-banda-8: color-mix(in oklab, var(--holo-tipo) 34%, var(--color-superficie));
     --holo-luz: var(--color-superficie);
     --holo-sombra: var(--color-tinta);
 

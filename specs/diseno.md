@@ -211,6 +211,10 @@ Referencia de técnica: el efecto holográfico en CSS popularizado por Simon Goe
 
 **Piezas.** La lógica de interacción vive en `src/components/TarjetaPokemon.tsx` o en un módulo pequeño junto a ella (por ejemplo `src/components/holo.ts` con el cálculo puro de posición e inclinación). Los estilos de las capas viven en `src/index.css`, en una capa `@layer components`, usando las variables anteriores.
 
+## Variación cromática holográfica (T11)
+
+El arcoíris fijo de la lámina holográfica se sustituye por una paleta propia de cada Pokémon, derivada del color de su primer tipo. Las franjas y los brillos deben variar de forma perceptible entre tipos, conservar el carácter iridiscente y mantener contraste suficiente para que el sprite siga siendo nítido. Si el Pokémon tiene un segundo tipo, puede usarse como acento; la paleta no debe depender de colores aleatorios ni alterar el contenido de la tarjeta. Se reutilizan los tokens `--color-tipo-*` existentes y el cambio queda limitado a la tarjeta holográfica.
+
 ## C1 — Búsqueda y filtro por cobertura
 
 La implementación corresponde a T9 de `specs/tareas.md`. El catálogo acepta `?amenaza={slug}`. Con ese parámetro se pide `GET /type/{slug}` y se leen los tipos de `damage_relations.double_damage_from`: son los que golpean a la amenaza con ventaja. De cada uno de esos tipos se usa el array `pokemon` que ya devuelve `GET /type/{ese-tipo}`, y la rejilla muestra la unión, sin la paginación normal. La búsqueda y las sugerencias se muestran desactivadas; "Quitar filtro" navega a `/`.
