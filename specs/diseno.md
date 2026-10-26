@@ -83,7 +83,8 @@ Base: `https://pokeapi.co/api/v2`.
 - Listado: `GET /pokemon?limit=20&offset={n}`. El id se saca de la `url` de cada resultado. El sprite de la tarjeta es `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png`.
 - Para los 20 de la página se pide `GET /pokemon/{id}` (ahí están los tipos) y después `GET /pokemon-species/{id}` (ahí está el nombre en español). No se pide la página siguiente hasta pulsar "Cargar más". Cuando `next` viene `null`, se acaba el listado.
 - Ficha: los mismos dos endpoints. El sprite de la ficha es `sprites.other["official-artwork"].front_default` y, si viene vacío, `sprites.front_default`.
-- Búsqueda: `GET /pokemon/{slug}` con el texto ya normalizado. Un 404 es el caso R6. Un 200 navega a `/pokemon/{id}`.
+- Búsqueda exacta: `GET /pokemon/{slug}` con el texto ya normalizado. Un 404 no impide comprobar coincidencias parciales; un 200 navega a `/pokemon/{id}`.
+- Búsqueda por prefijo (C1): las sugerencias y los resultados se comparan contra el nombre visible, español cuando `pokemon-species` lo trae y, si no, el nombre de la API. El índice cubre toda la Pokédex y se conserva en memoria durante la sesión; no se lanza una petición por tecla. Las sugerencias muestran hasta cinco coincidencias y permiten abrir la ficha. Al confirmar, una coincidencia exacta abre la ficha; si no, la rejilla muestra todas las coincidencias de prefijo en orden de Pokédex, sin paginación. Sin coincidencias se aplica el estado de R6.
 - Cobertura: de cada Pokémon del equipo se toman sus tipos (datos ya pedidos o `GET /pokemon/{id}`). De cada slug distinto, una sola vez, `GET /type/{slug}`. "Golpea con ventaja" es la unión de `damage_relations.double_damage_to`. "Recibe daño doble" es la unión de `damage_relations.double_damage_from`. Se pintan con el nombre español de la tabla de tipos, ordenados alfabéticamente.
 - Durante la sesión, una respuesta ya obtenida no se vuelve a pedir (un mapa en memoria por id y por tipo basta).
 
@@ -183,6 +184,8 @@ El texto de la insignia usa el color indicado para cada fondo y debe conservar c
 | steel | Acero | `bg-tipo-steel` | `text-tinta` |
 | fairy | Hada | `bg-tipo-fairy` | `text-tinta` |
 
-## Cambio reservado
+## C1 — Búsqueda y filtro por cobertura
 
-No se construye ahora. Cuando se active C1, el catálogo acepta `?amenaza={slug}`. Con ese parámetro se pide `GET /type/{slug}` y se leen los tipos de `damage_relations.double_damage_from`: son los que golpean a la amenaza con ventaja. De cada uno de esos tipos se usa el array `pokemon` que ya devuelve `GET /type/{ese-tipo}`, y la rejilla muestra la unión, sin la paginación normal. La búsqueda se pinta desactivada y "Quitar filtro" navega a `/`.
+La implementación corresponde a T9 de `specs/tareas.md`. El catálogo acepta `?amenaza={slug}`. Con ese parámetro se pide `GET /type/{slug}` y se leen los tipos de `damage_relations.double_damage_from`: son los que golpean a la amenaza con ventaja. De cada uno de esos tipos se usa el array `pokemon` que ya devuelve `GET /type/{ese-tipo}`, y la rejilla muestra la unión, sin la paginación normal. La búsqueda y las sugerencias se muestran desactivadas; "Quitar filtro" navega a `/`.
+
+Sin filtro de amenaza, el campo muestra sugerencias al escribir. El índice de nombres incluye toda la Pokédex y los nombres en español disponibles; se reutiliza durante la sesión y no se consulta PokeAPI por cada tecla. Las coincidencias ignoran mayúsculas y espacios extremos, y se limitan a nombres que empiezan por la consulta. Se muestran hasta cinco sugerencias, cada una enlazada a la ficha. Al enviar la búsqueda, una coincidencia exacta por nombre visible o slug abre la ficha; en otro caso, se muestran todos los resultados por prefijo en orden de Pokédex y sin paginación. Si no hay resultados, se conserva el catálogo y se muestra el estado de R6.

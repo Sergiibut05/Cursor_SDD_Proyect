@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
+  listarPokemonPorAmenaza,
   listarPokemon,
   obtenerFicha,
+  obtenerIndiceNombres,
   obtenerTipo,
 } from "../src/api/pokeapi.ts";
 
@@ -242,6 +244,138 @@ test("obtenerTipo reutiliza una petición concurrente y la caché de API", async
     assert.deepEqual(primero, segundo);
     assert.deepEqual(tercero, primero);
     assert.deepEqual(llamadas, ["https://pokeapi.co/api/v2/type/ghost"]);
+  } finally {
+    globalThis.fetch = fetchOriginal;
+  }
+});
+
+test("obtenerIndiceNombres carga el índice una vez y conserva el fallback de API", async () => {
+  const llamadas = [];
+  const fetchOriginal = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    llamadas.push(url);
+
+    if (url.endsWith("/pokemon?limit=100000&offset=0")) {
+      return Response.json({
+        count: 2,
+        next: null,
+        results: [
+          { name: "mr-mime", url: "https://pokeapi.co/api/v2/pokemon/9002/" },
+          { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon/9001/" },
+        ],
+      });
+    }
+    if (url.endsWith("/pokemon-species/9001")) {
+      return Response.json({
+        names: [{ name: "Bulbasaur", language: { name: "es" } }],
+      });
+    }
+    if (url.endsWith("/pokemon-species/9002")) {
+      return new Response(null, { status: 404 });
+    }
+    throw new Error(`URL inesperada: ${url}`);
+  };
+
+  try {
+    const indice = await obtenerIndiceNombres();
+    const llamadasTrasPrimeraCarga = llamadas.length;
+    const repetido = await obtenerIndiceNombres();
+
+    assert.deepEqual(indice, [
+      { id: 9001, nombre: "Bulbasaur", nombreApi: "bulbasaur" },
+      { id: 9002, nombre: "mr mime", nombreApi: "mr-mime" },
+    ]);
+    assert.strictEqual(repetido, indice);
+    assert.equal(llamadasTrasPrimeraCarga, 3);
+    assert.equal(llamadas.length, llamadasTrasPrimeraCarga);
+  } finally {
+    globalThis.fetch = fetchOriginal;
+  }
+});
+
+test("listarPokemonPorAmenaza une y ordena los Pokémon de tipos con daño doble", async () => {
+  const fetchOriginal = globalThis.fetch;
+  const llamadas = [];
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    llamadas.push(url);
+
+    if (url.endsWith("/type/water")) {
+      return Response.json({
+        name: "water",
+        damage_relations: {
+          double_damage_to: [],
+          double_damage_from: [{ name: "electric" }, { name: "grass" }],
+        },
+      });
+    }
+    if (url.endsWith("/type/electric")) {
+      return Response.json({
+        name: "electric",
+        damage_relations: {
+          double_damage_to: [],
+          double_damage_from: [],
+        },
+        pokemon: [
+          { pokemon: { name: "pokemon-802", url: "https://pokeapi.co/api/v2/pokemon/802/" } },
+          { pokemon: { name: "pokemon-801", url: "https://pokeapi.co/api/v2/pokemon/801/" } },
+        ],
+      });
+    }
+    if (url.endsWith("/type/grass")) {
+      return Response.json({
+        name: "grass",
+        damage_relations: {
+          double_damage_to: [],
+          double_damage_from: [],
+        },
+        pokemon: [
+          { pokemon: { name: "pokemon-801", url: "https://pokeapi.co/api/v2/pokemon/801/" } },
+        ],
+      });
+    }
+
+    const id = url.match(/\/pokemon\/(801|802)$/)?.[1];
+    if (id) {
+      return Response.json({
+        id: Number(id),
+        name: `pokemon-${id}`,
+        height: 4,
+        weight: 60,
+        types: [],
+        stats: [],
+        sprites: { front_default: null },
+      });
+    }
+    const speciesId = url.match(/\/pokemon-species\/(801|802)$/)?.[1];
+    if (speciesId) {
+      return Response.json({
+        names: [{ name: `Nombre ${speciesId}`, language: { name: "es" } }],
+      });
+    }
+    throw new Error(`URL inesperada: ${url}`);
+  };
+
+  try {
+    const resultado = await listarPokemonPorAmenaza("water");
+
+    assert.deepEqual(
+      resultado.map(({ id, nombre }) => ({ id, nombre })),
+      [
+        { id: 801, nombre: "Nombre 801" },
+        { id: 802, nombre: "Nombre 802" },
+      ],
+    );
+    assert.equal(llamadas.filter((url) => url.endsWith("/pokemon/801")).length, 1);
+    assert.deepEqual(
+      llamadas.filter((url) => url.includes("/type/")),
+      [
+        "https://pokeapi.co/api/v2/type/water",
+        "https://pokeapi.co/api/v2/type/electric",
+        "https://pokeapi.co/api/v2/type/grass",
+      ],
+    );
   } finally {
     globalThis.fetch = fetchOriginal;
   }

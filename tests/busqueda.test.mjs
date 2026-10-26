@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   buscarPokemon,
+  coincidePorPrefijo,
+  normalizarCoincidencia,
   normalizarBusqueda,
   PokeApiHttpError,
   PokemonNoEncontradoError,
@@ -15,6 +17,13 @@ test("normalizarBusqueda recorta, pasa a minúsculas y convierte espacios en gui
   assert.equal(normalizarBusqueda("  Mr Mime  "), "mr-mime");
   assert.equal(normalizarBusqueda("  Tapu   Koko "), "tapu-koko");
   assert.equal(normalizarBusqueda("PIKACHU"), "pikachu");
+});
+
+test("coincidencias por prefijo ignoran mayúsculas y espacios extremos", () => {
+  assert.equal(normalizarCoincidencia("  MR M  "), "mr m");
+  assert.equal(coincidePorPrefijo("Mr Mime", "  mr"), true);
+  assert.equal(coincidePorPrefijo("Mr Mime", "Mime"), false);
+  assert.equal(coincidePorPrefijo("Pikachu", "  "), false);
 });
 
 test("normalizar texto durante la edición no dispara peticiones", () => {

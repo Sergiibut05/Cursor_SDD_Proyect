@@ -15,7 +15,7 @@ Visor Pokémon es un catálogo para buscar Pokémon y abrir su ficha.
 ## Incluye
 
 - Catálogo paginado, con nombre, número, sprite y tipos.
-- Búsqueda por el nombre de la API.
+- Búsqueda por nombre con sugerencias y resultados por prefijo.
 - Ficha con sprite, tipos, altura, peso y seis estadísticas.
 - Apartado extra, fuera del recorrido principal: un equipo de hasta seis, recordado en el navegador, con un panel de cobertura de tipos. Se llega desde la ficha o desde un enlace secundario. No usarlo no impide buscar ni ver fichas.
 
@@ -24,7 +24,7 @@ Visor Pokémon es un catálogo para buscar Pokémon y abrir su ficha.
 - Cuentas, servidor propio y base de datos.
 - Combate, objetos, naturalezas, EVs, movimientos y evoluciones.
 - Efectividad combinada de un Pokémon con dos tipos (no hay cálculo de ×4).
-- Búsqueda por el nombre en español ni por texto parcial. PokeAPI identifica por el slug inglés.
+- Coincidencias aproximadas que toleren errores tipográficos. Las coincidencias parciales usan prefijo, no texto en cualquier posición.
 - Variocolor, formas regionales y el logo o la marca de Nintendo.
 - El filtro desde un hueco de cobertura. Eso es el cambio reservado, más abajo, y no forma parte del MVP.
 
@@ -63,6 +63,10 @@ El catálogo, la búsqueda y la ficha funcionan sin abrir esta sección.
 
 ## Cambio reservado
 
-No se implementa con el MVP. Cuando el grupo abra esta fase, primero se actualizan los requisitos, el diseño y las tareas, y solo después el código.
+Este cambio queda definido para su implementación posterior mediante la tarea T9 de `specs/tareas.md`.
 
-- **C1.** En "Recibe daño doble", cada tipo es un control. Activarlo abre el catálogo filtrado a los Pokémon que tengan al menos un tipo capaz de golpear ese tipo con ventaja (`double_damage_to` lo incluye). Un control "Quitar filtro" devuelve el catálogo normal. Mientras el filtro está activo, la búsqueda queda desactivada.
+- **C1 — Búsqueda y filtro por cobertura.**
+  - Mientras se escribe una consulta no vacía, aparecen debajo del campo hasta cinco sugerencias que empiezan por el texto escrito, en orden de Pokédex. La comparación no distingue mayúsculas ni espacios al principio o al final. Se compara con el nombre visible del Pokémon: el nombre en español de `pokemon-species` cuando existe y, si no, el nombre de la API.
+  - Las sugerencias corresponden a Pokémon de toda la Pokédex y permiten abrir su ficha. No se realiza una petición a PokeAPI por cada tecla.
+  - Al buscar con Enter o con el botón, una coincidencia exacta por nombre visible o slug de la API abre la ficha. Si no hay coincidencia exacta, se muestran en el catálogo todos los Pokémon cuyo nombre visible empieza por la consulta, en orden de Pokédex y sin paginación. Si no hay resultados, se lee el mensaje de R6 y el catálogo que ya estaba cargado sigue visible.
+  - En "Recibe daño doble", cada tipo es un control. Activarlo abre el catálogo filtrado a los Pokémon que tengan al menos un tipo capaz de golpear ese tipo con ventaja (`double_damage_to` lo incluye). Un control "Quitar filtro" devuelve el catálogo normal. Mientras el filtro está activo, la búsqueda y sus sugerencias quedan desactivadas.

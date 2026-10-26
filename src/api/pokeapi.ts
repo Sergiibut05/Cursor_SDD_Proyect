@@ -51,11 +51,19 @@ export type TipoApi = {
     double_damage_to: { name: string }[];
     double_damage_from: { name: string }[];
   };
+  pokemon?: { pokemon: { name: string; url: string } }[];
 };
 
 type ListadoApi = {
   next: string | null;
+  count?: number;
   results: { name: string; url: string }[];
+};
+
+export type PokemonIndice = {
+  id: number;
+  nombre: string;
+  nombreApi: string;
 };
 
 export class PokeApiHttpError extends Error {
@@ -80,9 +88,10 @@ export class PokemonNoEncontradoError extends Error {
   }
 }
 
-const cachePokemon = new Map<number, PokemonApi>();
-const cacheSpecies = new Map<number, SpeciesApi>();
+const cachePokemon = new Map<number, Promise<PokemonApi>>();
+const cacheSpecies = new Map<number, Promise<SpeciesApi>>();
 const cacheTipo = new Map<TipoId, Promise<TipoApi>>();
+let indiceNombres: Promise<PokemonIndice[]> | null = null;
 
 function idDesdeUrl(url: string): number {
   const limpia = url.replace(/\/$/, "");
@@ -103,6 +112,15 @@ async function getJson<T>(ruta: string): Promise<T> {
 
 export function normalizarBusqueda(texto: string): string {
   return texto.trim().toLowerCase().replace(/\s+/g, "-");
+}
+
+export function normalizarCoincidencia(texto: string): string {
+  return texto.trim().toLocaleLowerCase("es");
+}
+
+export function coincidePorPrefijo(nombre: string, consulta: string): boolean {
+  const prefijo = normalizarCoincidencia(consulta);
+  return prefijo !== "" && normalizarCoincidencia(nombre).startsWith(prefijo);
 }
 
 export async function buscarPokemon(
@@ -126,9 +144,13 @@ async function obtenerPokemonApi(id: number): Promise<PokemonApi> {
   if (guardado) {
     return guardado;
   }
-  const pokemon = await getJson<PokemonApi>(`/pokemon/${id}`);
-  cachePokemon.set(pokemon.id, pokemon);
-  return pokemon;
+  const solicitud = getJson<PokemonApi>(`/pokemon/${id}`)
+    .catch((error: unknown) => {
+      cachePokemon.delete(id);
+      throw error;
+    });
+  cachePokemon.set(id, solicitud);
+  return solicitud;
 }
 
 async function obtenerSpeciesApi(id: number): Promise<SpeciesApi> {
@@ -136,9 +158,105 @@ async function obtenerSpeciesApi(id: number): Promise<SpeciesApi> {
   if (guardado) {
     return guardado;
   }
-  const species = await getJson<SpeciesApi>(`/pokemon-species/${id}`);
-  cacheSpecies.set(id, species);
-  return species;
+  const solicitud = getJson<SpeciesApi>(`/pokemon-species/${id}`)
+    .catch((error: unknown) => {
+      cacheSpecies.delete(id);
+      throw error;
+    });
+  cacheSpecies.set(id, solicitud);
+  return solicitud;
+}
+
+async function enParalelo<T, R>(
+  valores: readonly T[],
+  limite: number,
+  procesar: (valor: T) => Promise<R>,
+): Promise<R[]> {
+  const resultado = Array.from({ length: valores.length }) as R[];
+  let siguiente = 0;
+
+  await Promise.all(
+    Array.from({ length: Math.min(limite, valores.length) }, async () => {
+      while (siguiente < valores.length) {
+        const indice = siguiente++;
+        resultado[indice] = await procesar(valores[indice]);
+      }
+    }),
+  );
+
+  return resultado;
+}
+
+async function cargarIndiceNombres(): Promise<PokemonIndice[]> {
+  const listado = await getJson<ListadoApi>("/pokemon?limit=100000&offset=0");
+  const entradas = [...listado.results]
+    .map((resultado) => ({
+      id: idDesdeUrl(resultado.url),
+      nombreApi: resultado.name,
+    }))
+    .sort((a, b) => a.id - b.id);
+
+  return enParalelo(entradas, 8, async ({ id, nombreApi }) => {
+    try {
+      const species = await obtenerSpeciesApi(id);
+      return { id, nombre: nombreDe(species, nombreApi), nombreApi };
+    } catch (error) {
+      if (error instanceof PokeApiHttpError && error.status === 404) {
+        return { id, nombre: nombreApi.replaceAll("-", " "), nombreApi };
+      }
+      throw error;
+    }
+  });
+}
+
+export function obtenerIndiceNombres(): Promise<PokemonIndice[]> {
+  if (indiceNombres) {
+    return indiceNombres;
+  }
+
+  const solicitud = cargarIndiceNombres().catch((error: unknown) => {
+    indiceNombres = null;
+    throw error;
+  });
+  indiceNombres = solicitud;
+  return solicitud;
+}
+
+export async function obtenerResumenes(
+  ids: readonly number[],
+): Promise<PokemonResumen[]> {
+  const idsUnicos = [...new Set(ids)].sort((a, b) => a - b);
+  return enParalelo(idsUnicos, 8, async (id) => {
+    const pokemon = await obtenerPokemonApi(id);
+    const species = await obtenerSpeciesApi(id).catch((error: unknown) => {
+      if (error instanceof PokeApiHttpError && error.status === 404) {
+        return { names: [] };
+      }
+      throw error;
+    });
+    return aResumen(pokemon, species);
+  });
+}
+
+export async function listarPokemonPorAmenaza(
+  amenaza: TipoId,
+): Promise<PokemonResumen[]> {
+  const relacionesAmenaza = await obtenerTipo(amenaza);
+  const tiposQueLaGolpean = relacionesAmenaza.damage_relations.double_damage_from
+    .map(({ name }) => name)
+    .filter(esTipoId);
+  const relacionesAtaque = await Promise.all(
+    tiposQueLaGolpean.map(obtenerTipo),
+  );
+  const ids = new Set<number>();
+
+  for (const tipo of relacionesAtaque) {
+    for (const entrada of tipo.pokemon ?? []) {
+      ids.add(idDesdeUrl(entrada.pokemon.url));
+    }
+  }
+
+  return obtenerResumenes([...ids]);
 }
 
 function esTipoId(valor: string): valor is TipoId {

@@ -8,7 +8,7 @@ alwaysApply: false
 La base es `https://pokeapi.co/api/v2`. Los contratos de paginación, nombres, sprites, búsqueda y cobertura están en `specs/diseno.md`. Cúmpelos.
 
 - Página de 20. El sprite de la rejilla sale del id. Los tipos y el nombre en español salen del detalle y de `pokemon-species`.
-- No recorras el listado entero ni dispares peticiones fuera de la página visible y del equipo.
+- No recorras el listado entero ni dispares peticiones fuera de la página visible y del equipo, salvo para el índice global de nombres que exige C1/T9 en `specs/requisitos.md` y `specs/diseno.md`. Ese índice se carga una vez por sesión y se reutiliza; no se hacen peticiones por tecla.
 - La búsqueda usa el slug inglés de la API. El texto que se muestra al usuario es el nombre `es` de species, con el nombre de la API de respaldo.
 - La cobertura lee `damage_relations` de `/type/{slug}`. No calcules combate, doble tipo combinado, naturalezas ni EVs.
 - Guarda en memoria las respuestas ya pedidas durante la sesión. El equipo persiste solo ids en `localStorage`, clave `visor-equipo`.

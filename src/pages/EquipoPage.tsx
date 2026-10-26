@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import {
   obtenerFicha,
   obtenerTipo,
@@ -6,6 +7,7 @@ import {
 } from "../api/pokeapi.ts";
 import { calcularCobertura, type Cobertura } from "../domain/cobertura.ts";
 import InsigniaTipo from "../components/InsigniaTipo.tsx";
+import { TIPOS } from "../api/tipos.ts";
 import {
   CLAVE_EQUIPO,
   leerEquipo,
@@ -19,9 +21,11 @@ function mensajeError(error: unknown): string {
 function ListaCobertura({
   titulo,
   tipos,
+  enlacesAmenaza = false,
 }: {
   titulo: string;
   tipos: Cobertura["golpeaConVentaja"];
+  enlacesAmenaza?: boolean;
 }) {
   return (
     <section className="rounded-2xl border border-linea bg-linear-to-br from-superficie via-superficie to-superficie-sombra p-5 shadow-[0_10px_24px_-18px_rgba(37,51,45,0.28),inset_0_1px_0_rgba(255,253,248,0.9)] sm:p-6">
@@ -29,7 +33,17 @@ function ListaCobertura({
       <ul aria-label={titulo} className="mt-4 flex flex-wrap gap-2">
         {tipos.map((tipo) => (
           <li key={tipo}>
-            <InsigniaTipo tipo={tipo} />
+            {enlacesAmenaza ? (
+              <Link
+                to={`/?amenaza=${tipo}`}
+                aria-label={`Filtrar catálogo por amenaza ${TIPOS[tipo].etiqueta}`}
+                className="inline-flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marca"
+              >
+                <InsigniaTipo tipo={tipo} />
+              </Link>
+            ) : (
+              <InsigniaTipo tipo={tipo} />
+            )}
           </li>
         ))}
       </ul>
@@ -241,6 +255,7 @@ export default function EquipoPage() {
               <ListaCobertura
                 titulo="Recibe daño doble"
                 tipos={cobertura.recibeDanioDoble}
+                enlacesAmenaza
               />
             </div>
           )}

@@ -2,9 +2,7 @@
 
 Esta lista es solo el trabajo del Miembro 2: construir la aplicación y, cuando ya funcione, escribir en el README cómo se ejecuta.
 
-Se hacen en orden. Una tarea por conversación, con `/implementar-tarea` y el id (`T1`, `T2`…). El repositorio ya trae la spec y la configuración del agente. La primera línea de aplicación es la T1.
-
-El cambio de requisitos C1, en `specs/requisitos.md`, no es una tarea de esta lista y no se implementa.
+Se hacen en orden. Una tarea por conversación, con `/implementar-tarea` y el id (`T1`, `T2`…). El repositorio ya trae la spec y la configuración del agente. La primera línea de aplicación es la T1. C1 queda para T9; no se implementa antes de completar las tareas anteriores.
 
 ## T1 — Esqueleto y marco visual
 
@@ -75,3 +73,17 @@ Pasos:
 2. Añade un workflow de GitHub Actions que construya el proyecto y publique el artefacto en Pages al hacer push a `main`; también permite iniciarlo manualmente desde Actions.
 3. Conserva la navegación de las rutas actuales cuando Pages sirve una ruta directa o se recarga.
 4. Documenta en el README el ajuste manual de Pages a la fuente "GitHub Actions" y dónde consultar la URL y el resultado del despliegue.
+
+## T9 — Búsqueda por coincidencias y filtro de cobertura (C1)
+
+- Responsable: Miembro 2.
+- Depende de: T8.
+- Hecho cuando: C1 de `specs/requisitos.md` y `specs/diseno.md` está implementado. Al escribir se muestran hasta cinco sugerencias por prefijo; al confirmar, una coincidencia exacta abre la ficha y, si no existe, aparecen todos los resultados por prefijo en orden de Pokédex. El índice cubre toda la Pokédex y se reutiliza en memoria, sin una petición por tecla. Los controles de "Recibe daño doble" abren el catálogo filtrado por amenaza; "Quitar filtro" restablece el catálogo y la búsqueda y las sugerencias quedan desactivadas durante el filtro.
+
+Pasos:
+
+1. Extiende el cliente de PokeAPI para disponer de un índice de nombres de toda la Pokédex, con nombre visible en español cuando esté disponible y nombre de API como alternativa. Reutiliza datos en memoria y evita peticiones por tecla.
+2. Añade sugerencias accesibles bajo el campo, limitadas a cinco y ordenadas por Pokédex. Seleccionar una abre `/pokemon/:id`.
+3. Al enviar la consulta, abre la ficha si hay coincidencia exacta por nombre visible o slug de API; en caso contrario muestra todos los resultados que empiezan por la consulta, sin paginación. Si no hay resultados, conserva el catálogo y muestra el mensaje de R6.
+4. Convierte los tipos de "Recibe daño doble" en controles que navegan al catálogo con `?amenaza={slug}`. Calcula los Pokémon que pueden golpear a esa amenaza con ventaja a partir de las relaciones de tipos de PokeAPI, muestra la unión sin paginación y ofrece "Quitar filtro".
+5. Desactiva búsqueda y sugerencias con un filtro de amenaza activo. Verifica los estados de carga y error, las coincidencias y la navegación por teclado, además del comportamiento existente del catálogo, búsqueda exacta y cobertura.
