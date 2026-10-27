@@ -10,7 +10,7 @@ La primera tarea de código es la T1 de `specs/tareas.md`.
 
 - Miembro 1: Sergii Butrii
 - Miembro 2: Cristian Sánchez
-- Miembro 3:
+- Miembro 3: Daniel Meléndez
 
 ## Cómo ejecutar
 
