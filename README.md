@@ -50,6 +50,16 @@ La primera vez, en GitHub abre **Settings > Pages** y cambia **Build and deploym
 
 La URL del sitio aparece en **Settings > Pages** y en el entorno `github-pages` del despliegue. Para consultar el resultado o los errores, abre **Actions** y selecciona la ejecución del workflow **Deploy to GitHub Pages**.
 
+## Presentación
+
+La presentación de la exposición está en [docs/presentacion.pdf](docs/presentacion.pdf).
+
+## Capturas
+
+![Catálogo](docs/capturas/catalogo.png)
+
+![Ficha de Pikachu](docs/capturas/ficha-pikachu.png)
+
 ## Bibliografía
 
 La lista comentada está en [docs/metodologia.md](docs/metodologia.md). Enlaces directos:
